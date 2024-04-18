@@ -29,8 +29,13 @@ public class PlayerController : MonoBehaviour
     float m_speed = 0;
     JUMP_STATE m_jump_state = 0;
     int m_jump_frame = 0;
+    float m_anime_frame = 0;
+
+    public GameObject m_bullet_prefab;
 
     [SerializeField] Vector2 m_pre_velocity = new Vector2(0, 0);
+    [SerializeField] float m_time = 0;
+    [SerializeField] string m_clip_name = "";
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +51,11 @@ public class PlayerController : MonoBehaviour
 
         Jump();
 
+        Shoot();
+
         Animation();
+
+        Debug();
     }
 
     void Move()
@@ -98,6 +107,10 @@ public class PlayerController : MonoBehaviour
             m_jump_state = JUMP_STATE.RISING;
             m_jump_frame = 0;
             m_rigidbody.AddForce(transform.up * JUMP_POWER, ForceMode2D.Impulse);
+
+            m_animator.SetTrigger("Jump");
+
+
             return;
         }
 
@@ -116,6 +129,17 @@ public class PlayerController : MonoBehaviour
         {
             m_jump_state = JUMP_STATE.NONE;
             m_jump_frame = 0;
+            m_animator.speed = 1.0f;
+        }
+    }
+
+    void Shoot()
+    {
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            GameObject bullet = Instantiate(m_bullet_prefab) as GameObject;
+            Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
+            bullet.GetComponent<BulletController>().Shoot(vec, m_dir);
         }
     }
 
@@ -136,6 +160,31 @@ public class PlayerController : MonoBehaviour
         {
             // 走り
             m_animator.SetTrigger("Run");
+        }
+
+        AnimatorStateInfo state_info = m_animator.GetCurrentAnimatorStateInfo(0);
+        m_time = state_info.normalizedTime;
+        m_clip_name = m_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+        if(m_clip_name == "Jump" && m_jump_state == JUMP_STATE.RISING)
+        {
+            if(state_info.normalizedTime >= 0.3f)
+            {
+                m_animator.speed = 0;
+
+            }
+        }
+        if(m_clip_name == "Jump" && m_jump_state == JUMP_STATE.NONE)
+        {
+            m_animator.SetTrigger("Idle");
+        }
+    }
+
+    void Debug()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            m_animator.speed = 1;
+            m_animator.SetTrigger("Idle");
         }
     }
 }

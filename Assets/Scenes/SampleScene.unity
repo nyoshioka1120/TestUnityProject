@@ -157,7 +157,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec3f6425d687f1e44af671ca412097d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_bullet_prefab: {fileID: 5045235183575121868, guid: f8fac132750e47049b73ef695276a0c5, type: 3}
   m_pre_velocity: {x: 0, y: 0}
+  m_time: 0
+  m_clip_name: 
 --- !u!212 &147495879
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -219,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 147495877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.824, y: -1.765, z: 0}
+  m_LocalPosition: {x: -5.29, y: 2.71, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -296,7 +299,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -618,6 +621,10 @@ PrefabInstance:
     - target: {fileID: 1843725700996632175, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830655663882670907, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
+      propertyPath: m_Material
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
