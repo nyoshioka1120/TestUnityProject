@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
     const float MIN_SPEED = 0.25f;
     const float MAX_WALK_SPEED = 3.0f;
     const float MAX_DASH_SPEED = 6.0f;
-    const float SPEED = 50.0f;
     const float SPEED_UP_RATE = 0.9f;
     const float SPEED_DOWN_RATE = 0.9f;
 
@@ -19,29 +18,41 @@ public class PlayerController : MonoBehaviour
     {
         NONE,
         RISING,
-        FALLING
+        FALLING,
+        LANDING
     }
 
+    SpriteRenderer m_sprite_renderer;
     Animator m_animator;
+
     Rigidbody2D m_rigidbody;
+    BoxCollider2D m_box_collider;
+
     Vector2 m_scale = new Vector2(0.5f, 0.5f);
+
     int m_dir = 1;
     float m_speed = 0;
     JUMP_STATE m_jump_state = 0;
     int m_jump_frame = 0;
-    float m_anime_frame = 0;
+    float m_ray_distance = 0.1f;
+    Vector3 m_ray_offset = new Vector3(0.0f, 0.0f, 0.0f);
+    bool m_is_ground = false;
 
     public GameObject m_bullet_prefab;
 
-    [SerializeField] Vector2 m_pre_velocity = new Vector2(0, 0);
-    [SerializeField] float m_time = 0;
-    [SerializeField] string m_clip_name = "";
+    Vector2 m_pre_velocity = new Vector2(0, 0);
+
+    [SerializeField] private LayerMask groundLayer;
 
     // Start is called before the first frame update
     void Start()
     {
         m_animator = GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();
+        m_box_collider = GetComponent<BoxCollider2D>();
+
+        m_sprite_renderer = GetComponent<SpriteRenderer>();
+        m_ray_distance = m_sprite_renderer.bounds.size.y * 0.5f + 0.05f;
     }
 
     // Update is called once per frame
@@ -55,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
         Animation();
 
-        Debug();
+        DebugKey();
     }
 
     void Move()
@@ -72,20 +83,48 @@ public class PlayerController : MonoBehaviour
         {
             dir = -1;
         }
+        if(Input.GetKeyUp(KeyCode.RightArrow) && Input.GetKey(KeyCode.LeftArrow))
+        {
+            dir = -1;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow))
+        {
+            dir = 1;
+        }
+        if(Input.GetKey(KeyCode.RightArrow) && Input.GetKey(KeyCode.LeftArrow))
+        {
+            dir = 0;
+            return;
+        }
 
-        if(m_dir != dir)
+
+        if(m_dir != dir && dir != 0)
         {
             m_dir = dir;
+            m_speed = 0;
             transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.x, 1);
         }
+
+        float max_speed = Input.GetKey(KeyCode.Z) ? MAX_DASH_SPEED : MAX_WALK_SPEED;
 
         if(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
         {
             m_speed += SPEED_UP_RATE;
-            m_rigidbody.velocity = new Vector2(m_speed * m_dir, m_rigidbody.velocity.y);
+            if(m_speed > max_speed)
+            {
+                m_speed = max_speed;
+            }
+        }
+        else
+        {
+            m_speed -= SPEED_UP_RATE;
+            if(m_speed < 0)
+            {
+                m_speed = 0;
+            }
         }
 
-        float max_speed = Input.GetKey(KeyCode.Z) ? MAX_DASH_SPEED : MAX_WALK_SPEED;
+        m_rigidbody.velocity = new Vector2(m_speed * m_dir, m_rigidbody.velocity.y);
         
         if(Mathf.Abs(m_rigidbody.velocity.x) > max_speed)
         {
@@ -102,34 +141,38 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if(Input.GetKeyDown(KeyCode.X) && m_rigidbody.velocity.y == 0)
+        m_ray_offset = new Vector3(m_box_collider.offset.x * 0.5f * m_dir, 0.0f, 0.0f);
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
+        m_is_ground = hit.collider != null;
+
+        if(!m_is_ground && m_rigidbody.velocity.y < 0)
+        {
+            m_jump_state = JUMP_STATE.FALLING;
+        }
+
+        if(m_is_ground && m_jump_state == JUMP_STATE.FALLING)
+        {
+            m_jump_state = JUMP_STATE.NONE;
+
+            m_jump_frame = 0;
+
+            Debug.Log("着地");
+        }
+
+        if(Input.GetKeyDown(KeyCode.X) && m_is_ground)
         {
             m_jump_state = JUMP_STATE.RISING;
             m_jump_frame = 0;
             m_rigidbody.AddForce(transform.up * JUMP_POWER, ForceMode2D.Impulse);
 
-            m_animator.SetTrigger("Jump");
-
-
-            return;
+            
         }
 
         if(Input.GetKey(KeyCode.X) && m_jump_state == JUMP_STATE.RISING &&  m_jump_frame < ON_JUMP_FRAME)
         {
             m_jump_frame++;
             m_rigidbody.AddForce(transform.up * ADD_JUMP_POWER, ForceMode2D.Impulse);
-        }
-
-        if((m_jump_state == JUMP_STATE.RISING && Input.GetKeyUp(KeyCode.X)) || (m_jump_state == JUMP_STATE.RISING &&  m_jump_frame >= ON_JUMP_FRAME))
-        {
-            m_jump_state = JUMP_STATE.FALLING;
-        }
-
-        if(Input.GetKeyDown(KeyCode.X) && m_rigidbody.velocity.y == 0)
-        {
-            m_jump_state = JUMP_STATE.NONE;
-            m_jump_frame = 0;
-            m_animator.speed = 1.0f;
         }
     }
 
@@ -146,45 +189,44 @@ public class PlayerController : MonoBehaviour
     void Animation()
     {
         float speed = Mathf.Abs(m_rigidbody.velocity.x);
-        if(speed == 0)
+        if(m_jump_state == JUMP_STATE.NONE)
         {
-            // 待機
-            m_animator.SetTrigger("Idle");
-        }
-        if(speed > 0 && speed <= MAX_WALK_SPEED)
-        {
-            // 歩き
-            m_animator.SetTrigger("Walk");
-        }
-        if(speed > MAX_WALK_SPEED)
-        {
-            // 走り
-            m_animator.SetTrigger("Run");
-        }
-
-        AnimatorStateInfo state_info = m_animator.GetCurrentAnimatorStateInfo(0);
-        m_time = state_info.normalizedTime;
-        m_clip_name = m_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-        if(m_clip_name == "Jump" && m_jump_state == JUMP_STATE.RISING)
-        {
-            if(state_info.normalizedTime >= 0.3f)
+            if(speed == 0)
             {
-                m_animator.speed = 0;
-
+                // 待機
+                m_animator.SetTrigger("Idle");
+            }
+            if(speed > 0 && speed <= MAX_WALK_SPEED)
+            {
+                // 歩き
+                m_animator.SetTrigger("Walk");
+            }
+            if(speed > MAX_WALK_SPEED)
+            {
+                // 走り
+                m_animator.SetTrigger("Run");
             }
         }
-        if(m_clip_name == "Jump" && m_jump_state == JUMP_STATE.NONE)
+
+        if(m_jump_state == JUMP_STATE.RISING)
         {
+            m_animator.SetTrigger("JumpStart");
+        }
+    }
+
+    void DebugKey()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            m_jump_state = JUMP_STATE.RISING;
+            m_animator.speed = 1;
             m_animator.SetTrigger("Idle");
         }
     }
 
-    void Debug()
+    void OnDrawGizmos()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            m_animator.speed = 1;
-            m_animator.SetTrigger("Idle");
-        }
+        Gizmos.color = m_is_ground ? Color.green : Color.red;
+        Gizmos.DrawRay(transform.position + m_ray_offset, new Vector3(0, -m_ray_distance, 0));
     }
 }
