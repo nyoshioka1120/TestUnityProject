@@ -6,13 +6,15 @@ public class PlayerController : MonoBehaviour
 {
     const float MIN_SPEED = 0.25f;
     const float MAX_WALK_SPEED = 3.0f;
-    const float MAX_DASH_SPEED = 6.0f;
+    const float MAX_RUN_SPEED = 6.0f;
     const float SPEED_UP_RATE = 0.9f;
     const float SPEED_DOWN_RATE = 0.9f;
 
     const float JUMP_POWER = 10.0f;
     const float ADD_JUMP_POWER = 1.0f;
     const int ON_JUMP_FRAME = 8;
+
+    const float SHOOT_ANIMATION_TIME = 1.0f / 2.0f;
 
     enum JUMP_STATE
     {
@@ -39,6 +41,12 @@ public class PlayerController : MonoBehaviour
     bool m_is_ground = false;
 
     public GameObject m_bullet_prefab;
+
+    string m_now_anime_state = "Idle";
+    string m_pre_anime_state = "Idle";
+
+    float m_shoot_anime_time = -1.0f;
+    [SerializeField] private float normalized_time = 0;
 
     Vector2 m_pre_velocity = new Vector2(0, 0);
 
@@ -94,10 +102,11 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKey(KeyCode.RightArrow) && Input.GetKey(KeyCode.LeftArrow))
         {
             dir = 0;
+            ChangeAnimetion("Idle");
             return;
         }
 
-
+        // 方向転換
         if(m_dir != dir && dir != 0)
         {
             m_dir = dir;
@@ -105,7 +114,7 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.x, 1);
         }
 
-        float max_speed = Input.GetKey(KeyCode.Z) ? MAX_DASH_SPEED : MAX_WALK_SPEED;
+        float max_speed = Input.GetKey(KeyCode.Z) ? MAX_RUN_SPEED : MAX_WALK_SPEED;
 
         if(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -121,6 +130,22 @@ public class PlayerController : MonoBehaviour
             if(m_speed < 0)
             {
                 m_speed = 0;
+            }
+        }
+
+        if(!IsJumping() && !IsRunning())
+        {
+            if(m_speed == 0)
+            {
+                ChangeAnimetion("Idle");
+            }
+            else if(m_speed > 0 && m_speed < MAX_RUN_SPEED)
+            {
+                ChangeAnimetion("Walk");
+            }
+            else if(m_speed >= MAX_RUN_SPEED)
+            {
+                ChangeAnimetion("Run");
             }
         }
 
@@ -154,10 +179,8 @@ public class PlayerController : MonoBehaviour
         if(m_is_ground && m_jump_state == JUMP_STATE.FALLING)
         {
             m_jump_state = JUMP_STATE.NONE;
-
             m_jump_frame = 0;
-
-            Debug.Log("着地");
+            OnJumpAnimeEnd();
         }
 
         if(Input.GetKeyDown(KeyCode.X) && m_is_ground)
@@ -165,8 +188,7 @@ public class PlayerController : MonoBehaviour
             m_jump_state = JUMP_STATE.RISING;
             m_jump_frame = 0;
             m_rigidbody.AddForce(transform.up * JUMP_POWER, ForceMode2D.Impulse);
-
-            
+            ChangeAnimetion("JumpStart");
         }
 
         if(Input.GetKey(KeyCode.X) && m_jump_state == JUMP_STATE.RISING &&  m_jump_frame < ON_JUMP_FRAME)
@@ -178,40 +200,116 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
+        normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
         if(Input.GetKeyDown(KeyCode.C))
         {
             GameObject bullet = Instantiate(m_bullet_prefab) as GameObject;
             Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
             bullet.GetComponent<BulletController>().Shoot(vec, m_dir);
+
+            normalized_time = normalized_time % 1;
+
+            if(IsJumping())
+            {
+                normalized_time = 0;
+                ChangeAnimetion("JumpingShoot", 0);
+            }
+            else if(m_speed == 0)
+            {
+                normalized_time = 0;
+                ChangeAnimetion("Shoot", 0);
+            }
+            else if(m_speed > 0 && m_speed < MAX_RUN_SPEED)
+            {
+                ChangeAnimetion("WalkShoot", normalized_time);
+            }
+            else if(m_speed >= MAX_RUN_SPEED)
+            {
+                ChangeAnimetion("RunShoot", normalized_time);
+            }
+
+            m_shoot_anime_time = normalized_time;
+        }
+
+        if(normalized_time - m_shoot_anime_time > SHOOT_ANIMATION_TIME && m_shoot_anime_time >= 0)
+        {
+            OnShootAnimeEnd();
         }
     }
 
     void Animation()
     {
-        float speed = Mathf.Abs(m_rigidbody.velocity.x);
-        if(m_jump_state == JUMP_STATE.NONE)
+    }
+
+    bool ChangeAnimetion(string _anime, float _fixed_time = -1.0f)
+    {
+        if(m_now_anime_state == _anime && _fixed_time == -1.0f)
         {
-            if(speed == 0)
-            {
-                // 待機
-                m_animator.SetTrigger("Idle");
-            }
-            if(speed > 0 && speed <= MAX_WALK_SPEED)
-            {
-                // 歩き
-                m_animator.SetTrigger("Walk");
-            }
-            if(speed > MAX_WALK_SPEED)
-            {
-                // 走り
-                m_animator.SetTrigger("Run");
-            }
+            return false;
         }
 
-        if(m_jump_state == JUMP_STATE.RISING)
+        m_pre_anime_state = m_now_anime_state;
+        m_now_anime_state = _anime;
+
+        if(_fixed_time == -1.0f)
         {
-            m_animator.SetTrigger("JumpStart");
+            m_animator.SetTrigger(_anime);
         }
+        else
+        {
+            m_animator.Play(_anime, -1, _fixed_time);
+        }
+
+        return true;
+    }
+
+    bool IsJumping()
+    {
+        return m_jump_frame > 0;
+    }
+
+    void OnJumpAnimeEnd()
+    {
+        if(m_speed == 0)
+        {
+            ChangeAnimetion("Idle");
+        }
+        else if(m_speed > 0 && m_speed < MAX_RUN_SPEED)
+        {
+            ChangeAnimetion("Walk");
+        }
+        else if(m_speed >= MAX_RUN_SPEED)
+        {
+            ChangeAnimetion("Run");
+        }
+    }
+
+    bool IsRunning()
+    {
+        return m_shoot_anime_time != -1.0f;
+    }
+
+    void OnShootAnimeEnd()
+    {
+        if(IsJumping())
+        {
+            ChangeAnimetion("JumpStart", 0.1f);
+        }
+        else if(m_speed == 0)
+        {
+            ChangeAnimetion("Idle");
+        }
+        else if(m_speed > 0 && m_speed < MAX_RUN_SPEED)
+        {
+            ChangeAnimetion("Walk");
+        }
+        else if(m_speed >= MAX_RUN_SPEED)
+        {
+            ChangeAnimetion("Run");
+        }
+
+        m_shoot_anime_time = -1.0f;
     }
 
     void DebugKey()
