@@ -179,6 +179,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GroundPrefab (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 725192360918659991, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1843725700996632175, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
       propertyPath: m_LocalScale.x
       value: 5.7715454
@@ -402,6 +406,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
+--- !u!1 &1449510694
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1449510696}
+  - component: {fileID: 1449510695}
+  m_Layer: 0
+  m_Name: EnemyGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1449510695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449510694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c088ec311ef753349b39a2d4f79a6dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyMite: {fileID: 6891220731814563270, guid: 6f472843c3e1ac044b89ef25c960835c, type: 3}
+--- !u!4 &1449510696
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449510694}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7985161, y: -0.9924378, z: -0.06318065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1455565472
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -413,6 +462,10 @@ PrefabInstance:
     - target: {fileID: 725192360918659991, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
       propertyPath: m_Name
       value: GroundPrefab (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 725192360918659991, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1843725700996632175, guid: a4aece71d06d9214f86557ae2baa67f6, type: 3}
       propertyPath: m_LocalScale.x
@@ -629,12 +682,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec3f6425d687f1e44af671ca412097d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_jump_state: 0
-  m_is_ground: 0
   m_bullet_prefab: {fileID: 5045235183575121868, guid: f8fac132750e47049b73ef695276a0c5, type: 3}
-  m_pre_velocity: {x: 0, y: 0}
-  m_time: 0
-  m_clip_name: 
+  normalized_time: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -715,3 +764,4 @@ SceneRoots:
   - {fileID: 1122022167}
   - {fileID: 1455565472}
   - {fileID: 460998675}
+  - {fileID: 1449510696}

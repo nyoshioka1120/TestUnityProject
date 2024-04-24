@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviour
         {
             m_dir = dir;
             m_speed = 0;
-            transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.x, 1);
+            transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.y, 1);
         }
 
         float max_speed = Input.GetKey(KeyCode.Z) ? MAX_RUN_SPEED : MAX_WALK_SPEED;
