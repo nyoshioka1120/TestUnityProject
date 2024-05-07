@@ -29,14 +29,15 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D m_rigidbody;
     BoxCollider2D m_box_collider;
+    CircleCollider2D m_circle_collider;
 
-    Vector2 m_scale = new Vector2(0.5f, 0.5f);
+    Vector2 m_scale = new Vector2(0.25f, 0.25f);
 
     int m_dir = 1;
     float m_speed = 0;
     JUMP_STATE m_jump_state = 0;
     int m_jump_frame = 0;
-    float m_ray_distance = 0.1f;
+    float m_ray_distance = 0;
     Vector3 m_ray_offset = new Vector3(0.0f, 0.0f, 0.0f);
     bool m_is_ground = false;
 
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
     Vector2 m_pre_velocity = new Vector2(0, 0);
 
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float radius = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -58,9 +60,12 @@ public class PlayerController : MonoBehaviour
         m_animator = GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody2D>();
         m_box_collider = GetComponent<BoxCollider2D>();
+        m_circle_collider = GetComponent<CircleCollider2D>();
 
         m_sprite_renderer = GetComponent<SpriteRenderer>();
-        m_ray_distance = m_sprite_renderer.bounds.size.y * 0.5f + 0.05f;
+        //m_ray_distance = m_sprite_renderer.bounds.size.y * 0.5f + 0.05f;
+        m_ray_distance = (m_circle_collider.radius + 0.1f) * m_scale.x;
+        radius = m_ray_distance;
     }
 
     // Update is called once per frame
@@ -166,7 +171,8 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        m_ray_offset = new Vector3(m_box_collider.offset.x * 0.5f * m_dir, 0.0f, 0.0f);
+        //m_ray_offset = new Vector3(m_box_collider.offset.x * 0.5f * m_dir, 0.0f, 0.0f);
+        m_ray_offset = new Vector3(m_circle_collider.offset.x * m_scale.x * m_dir, m_circle_collider.offset.y * m_scale.y, 0.0f);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
         m_is_ground = hit.collider != null;
