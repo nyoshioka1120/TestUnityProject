@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f8a3a6cc7250bb4793272d3b328fd95, type: 3}
+  m_Name: MapTiles
+  m_EditorClassIdentifier: 
+  list:
+  - name: 71
+    tile: {fileID: 11400000, guid: b8fd67fa9ebece14eab11e06003668e1, type: 2}
+  - name: 72
+    tile: {fileID: 11400000, guid: 2c3f66482552cca4a9f21801fad4e60a, type: 2}
+  - name: 73
+    tile: {fileID: 11400000, guid: a2b2d38a7d38a304f9ed1070644d1313, type: 2}
+  - name: 106
+    tile: {fileID: 11400000, guid: 33370766572bc4c48aeb9ceefe1610d5, type: 2}
+  - name: 107
+    tile: {fileID: 11400000, guid: 8855ed517931de04fa519a56a883dded, type: 2}
+  - name: 108
+    tile: {fileID: 11400000, guid: db7eaba01010a354b9feb7d1686e5d77, type: 2}
+  - name: 109
+    tile: {fileID: 11400000, guid: 816d77c5cf1ac7049af360e1746cfca9, type: 2}
+  - name: 110
+    tile: {fileID: 11400000, guid: efe7e75f7d7a2d14aab31092afdca46b, type: 2}
+  - name: 140
+    tile: {fileID: 11400000, guid: 7e6ff00c44762a2438487244c9cc9640, type: 2}
+  - name: 144
+    tile: {fileID: 11400000, guid: 8f7fdea78b379c441a618713355dd9b4, type: 2}
