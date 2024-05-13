@@ -53,8 +53,10 @@ public class MapDataController : MonoBehaviour
                 {
                     var tile = tilemap.GetTile(new Vector3Int(x, y, 0));
                     string name = tile_data_list.list.Single(t => t.tile == tile).name;
+                    string type = tile_data_list.list.Single(t => t.tile == tile).type;
                     var rot = tilemap.GetTransformMatrix(new Vector3Int(x, y, 0)).rotation;
                     tile_data.name = name;
+                    tile_data.type = type;
                     tile_data.rot = rot;                  
                 }
 
@@ -107,16 +109,20 @@ public class MapDataController : MonoBehaviour
                     x++;
                     continue;
                 }
-                else if(map_data.name == "E_Mite")
-                {
-                    Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
-                    GenerateEnemy("E_Mite", pos);
-                }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tile_data_list.list.Single(t => t.name == map_data.name).tile);
-                    Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, map_data.rot, Vector3.one);
-                    tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), mat);
+                    if(map_data.type == "enemy")
+                    {
+                        Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                        GenerateEnemy(map_data.name, pos);
+                    }
+                    else if(map_data.type == "tile")
+                    {
+                        tilemap.SetTile(new Vector3Int(x, y, 0), tile_data_list.list.Single(t => t.name == map_data.name).tile);
+                        Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, map_data.rot, Vector3.one);
+                        tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), mat);
+                    }
+
                     x++;
                 }
             }
@@ -145,5 +151,6 @@ public class MapSetting
 public class MapData
 {
     public string name = "";
+    public string type = "";
     public Quaternion rot = new Quaternion(0, 0, 0, 1.0f);
 }

@@ -15,6 +15,8 @@ public class EnemyMite : EnemyBase
     {
         base.Start();
 
+        m_box_collider = GetComponent<BoxCollider2D>();
+
         m_speed = 1.0f;
         m_dir = Random.Range(0,2) * 2 -1;
         m_scale = new Vector2(0.5f, 0.5f);
@@ -22,8 +24,8 @@ public class EnemyMite : EnemyBase
 
         m_animator = GetComponent<Animator>();
         m_animator.SetTrigger("Walk");
-
-        m_ray_distance = GetComponent<SpriteRenderer>().bounds.size.x * m_scale.x + 0.05f;
+        
+        m_ray_distance = m_box_collider.size.x * m_scale.x * 0.5f + 0.05f;
 
         m_hp = 5;
 
