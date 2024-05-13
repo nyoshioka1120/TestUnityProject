@@ -303,7 +303,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 0}
   tile_data_list: {fileID: 11400000, guid: 6bd50efe7f2010346b3113842a65390a, type: 2}
-  empty_grid_prefab: {fileID: 6038239127907249488, guid: adfb6b35c26a31647b2e4afadbf0db71, type: 3}
+  empty_grid_prefab: {fileID: 7723448951743673214, guid: a747b6c52369975419d5135f79d75ee8, type: 3}
+  enemy_generator: {fileID: 1449510694}
   FILE_NAME: map_data
   FILE_DIR: MapData/
 --- !u!4 &807487395

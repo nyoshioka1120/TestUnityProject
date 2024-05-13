@@ -31,5 +31,7 @@ MonoBehaviour:
     tile: {fileID: 11400000, guid: efe7e75f7d7a2d14aab31092afdca46b, type: 2}
   - name: 140
     tile: {fileID: 11400000, guid: 7e6ff00c44762a2438487244c9cc9640, type: 2}
+  - name: E_Mite
+    tile: {fileID: 11400000, guid: b8e181bc656e4e14fb5e1636ddc51254, type: 2}
   - name: 144
     tile: {fileID: 11400000, guid: 8f7fdea78b379c441a618713355dd9b4, type: 2}

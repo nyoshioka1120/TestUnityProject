@@ -21,4 +21,21 @@ public class EnemyGenerator : MonoBehaviour
             obj.transform.position = new Vector3(5.0f, -2.0f, 0);
         }
     }
+
+    public void Generate(string _name, Vector3 _pos)
+    {
+        switch(_name)
+        {
+            case "E_Mite":
+            {
+                var obj = Instantiate(EnemyMite);
+                obj.transform.position = _pos;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
 }

@@ -14,6 +14,7 @@ public class MapDataController : MonoBehaviour
     [SerializeField] TileDataList tile_data_list;
 
     [SerializeField] GameObject empty_grid_prefab;
+    [SerializeField] GameObject enemy_generator;
 
     [SerializeField] string FILE_NAME = "map_data";
     [SerializeField] string FILE_DIR = "MapData/";
@@ -106,6 +107,11 @@ public class MapDataController : MonoBehaviour
                     x++;
                     continue;
                 }
+                else if(map_data.name == "E_Mite")
+                {
+                    Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                    GenerateEnemy("E_Mite", pos);
+                }
                 else
                 {
                     tilemap.SetTile(new Vector3Int(x, y, 0), tile_data_list.list.Single(t => t.name == map_data.name).tile);
@@ -116,6 +122,11 @@ public class MapDataController : MonoBehaviour
             }
             y++;
         }
+    }
+
+    public void GenerateEnemy(string _name, Vector3 _pos)
+    {
+        enemy_generator.GetComponent<EnemyGenerator>().Generate(_name, _pos);
     }
 }
 
