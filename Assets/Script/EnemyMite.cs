@@ -12,13 +12,13 @@ public class EnemyMite : EnemyBase
     float m_ray_distance = 0.1f;
 
     int m_action = 1;
-    [SerializeField] int m_action_cnt = 0;
+    int m_action_cnt = 0;
 
     int IDLE_TIME = 60;
     int MOVE_TIME = 60;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         base.Start();
 
@@ -39,7 +39,7 @@ public class EnemyMite : EnemyBase
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         switch(m_action)
         {
@@ -99,11 +99,6 @@ public class EnemyMite : EnemyBase
         }
     }
 
-    void Dead()
-    {
-        ChangeAction(0);
-    }
-
     void Idle()
     {
         if(m_action_cnt > IDLE_TIME)
@@ -147,13 +142,13 @@ public class EnemyMite : EnemyBase
 
         if(m_hp <= 0)
         {
-            Dead();
+            ChangeAction(0);
         }
     }
 
     void OnDeadAnimeEnd()
     {
-        base.Dead();
+        Dead();
     }
 
     void OnDrawGizmos()
