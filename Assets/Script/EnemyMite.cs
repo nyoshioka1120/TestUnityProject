@@ -6,9 +6,16 @@ public class EnemyMite : EnemyBase
 {
     Animator m_animator;
     BoxCollider2D m_box_collider;
+    CircleCollider2D m_circle_collider;
 
     [SerializeField] private LayerMask groundLayer;
     float m_ray_distance = 0.1f;
+
+    int m_action = 1;
+    [SerializeField] int m_action_cnt = 0;
+
+    int IDLE_TIME = 60;
+    int MOVE_TIME = 60;
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +23,7 @@ public class EnemyMite : EnemyBase
         base.Start();
 
         m_box_collider = GetComponent<BoxCollider2D>();
+        m_circle_collider = GetComponent<CircleCollider2D>();
 
         m_speed = 1.0f;
         m_dir = Random.Range(0,2) * 2 -1;
@@ -23,18 +31,85 @@ public class EnemyMite : EnemyBase
         transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.y, 1);
 
         m_animator = GetComponent<Animator>();
-        m_animator.SetTrigger("Walk");
+        ChangeAction(2);
         
         m_ray_distance = m_box_collider.size.x * m_scale.x * 0.5f + 0.05f;
 
         m_hp = 5;
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        Move();
+        switch(m_action)
+        {
+            case 0:
+            {
+                //Dead();
+                break;
+            }
+            case 1:
+            {
+                Idle();
+                break;
+            }
+            case 2:
+            {
+                Move();
+                break;
+            }
+        }
+
+        m_action_cnt++;
+    }
+
+    void ChangeAction(int _action)
+    {
+        m_action_cnt = 0;
+
+        if(m_action == _action)
+        {
+            return;
+        }
+
+        m_action = _action;
+
+        switch(m_action)
+        {
+            case 0:
+            {
+                m_animator.SetTrigger("Dead");
+                break;
+            }
+            case 1:
+            {
+                m_animator.SetTrigger("Idle");
+                break;
+            }
+            case 2:
+            {
+                m_animator.SetTrigger("Walk");
+                break;
+            }
+            default:
+            {
+                m_animator.SetTrigger("Idle");
+                break;
+            }
+        }
+    }
+
+    void Dead()
+    {
+        ChangeAction(0);
+    }
+
+    void Idle()
+    {
+        if(m_action_cnt > IDLE_TIME)
+        {
+            ChangeAction(Random.Range(1, 3));
+        }
     }
 
     void Move()
@@ -48,6 +123,11 @@ public class EnemyMite : EnemyBase
         }
 
         m_rigidbody.velocity = new Vector2(m_speed * m_dir, m_rigidbody.velocity.y);
+
+        if(m_action_cnt > MOVE_TIME)
+        {
+            ChangeAction(1);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -69,6 +149,11 @@ public class EnemyMite : EnemyBase
         {
             Dead();
         }
+    }
+
+    void OnDeadAnimeEnd()
+    {
+        base.Dead();
     }
 
     void OnDrawGizmos()
