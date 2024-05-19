@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float radius = 0;
 
+    bool m_control_enabled = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -71,6 +73,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(m_control_enabled == false)
+        {
+            return;
+        }
+
         Move();
 
         Jump();
@@ -316,6 +323,11 @@ public class PlayerController : MonoBehaviour
         }
 
         m_shoot_anime_time = -1.0f;
+    }
+
+    public void SetControlEnabled(bool _enabled)
+    {
+        m_control_enabled = _enabled;
     }
 
     void DebugKey()

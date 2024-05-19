@@ -12,6 +12,8 @@ public class EnemyBase : MonoBehaviour
     protected Rigidbody2D m_rigidbody;
 
     protected Vector2 m_scale = new Vector2(1.0f, 1.0f);
+
+    protected string m_unique_name = "";
     
 
     // Start is called before the first frame update
@@ -41,8 +43,14 @@ public class EnemyBase : MonoBehaviour
         return m_hp > 0;
     }
 
-    protected void Dead()
+    protected virtual void Dead()
     {
+        GameObject director = GameObject.Find("GameDirector");
+        if(director)
+        {
+            director.GetComponent<GameDirector>().SetCleared(m_unique_name);
+        }
+
         Destroy(gameObject);
     }
 }
