@@ -8,13 +8,15 @@ public class GameDirector : MonoBehaviour
     enum GAME_MODE
     {
         NONE,
-        GAME,
         MOVIE,
+        GAME,
         CLEAR
     }
 
     GAME_MODE m_game_mode = GAME_MODE.NONE;
 
+    [SerializeField] GameObject m_player_prefab;
+    GameObject m_player;
     PlayerController m_player_controller;
     [SerializeField] List<QuestData> m_clear_check_list = new List<QuestData>();
 
@@ -24,53 +26,67 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         LoadStageData();
-        
-        QuestData tmp_data = new QuestData();
-        tmp_data.name = "tmp";
-        m_clear_check_list.Add(tmp_data);
 
-        m_game_mode = GAME_MODE.GAME;
+        MovieStart();
+
+        m_scene_director.StartFadeIn();
+
+        m_game_mode = GAME_MODE.NONE;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(m_player_controller == null)
-        {
-            m_player_controller = GameObject.Find("Player").GetComponent<PlayerController>();
-        }
-
         switch(m_game_mode)
         {
             case GAME_MODE.NONE:
             {
                 break;
             }
-            case GAME_MODE.GAME:
-            {
-                GameUpdate();
-                break;
-            }
             case GAME_MODE.MOVIE:
             {
                 MovieUpdate();
-                break;
+                return;
+            }
+            case GAME_MODE.GAME:
+            {
+                GameUpdate();
+                return;
             }
             case GAME_MODE.CLEAR:
             {
                 ClearUpdate();
-                break;
+                return;
             }
             default:
             {
-                break;
+                return;
             }
+        }
+
+        if(m_scene_director.FadeIn())
+        {
+            MovieEnd();
+            m_game_mode = GAME_MODE.GAME;
+        }
+
+        if(m_scene_director.IsFadeIn())
+        {
+            return;
         }
     }
 
     void LoadStageData()
     {
+        QuestData tmp_data = new QuestData();
+        tmp_data.name = "tmp";
+        m_clear_check_list.Add(tmp_data);
 
+        m_player = Instantiate(m_player_prefab) as GameObject;
+        m_player_controller = m_player.GetComponent<PlayerController>();
+
+        var camera = GameObject.Find("Main Camera");
+        camera.GetComponent<CameraController>().SetPlayer();
     }
 
     void MovieUpdate()
@@ -135,6 +151,8 @@ public class GameDirector : MonoBehaviour
         m_game_mode = GAME_MODE.CLEAR;
 
         m_scene_director.StartFadeOut();
+
+        MovieStart();
     }
 
     void DebugStageClear()

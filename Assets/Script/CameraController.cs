@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    GameObject player;
+    GameObject player = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        this.player = GameObject.Find("Player");
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 playerPos = this.player.transform.position;
+        if(player == null)
+        {
+            return;
+        }
+
+        Vector3 playerPos = player.transform.position;
         transform.position = new Vector3(playerPos.x, transform.position.y, transform.position.z);
+    }
+
+    public void SetPlayer()
+    {
+        if(player) return;
+
+        player = GameObject.Find("Player(Clone)");
+        Update();
     }
 }

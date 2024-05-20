@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameSceneDirector : BaseSceneDirector
 {
     // Start is called before the first frame update
-    // void Start()
+    // protected override void Start()
     // {
         
     // }

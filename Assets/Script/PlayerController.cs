@@ -328,6 +328,11 @@ public class PlayerController : MonoBehaviour
     public void SetControlEnabled(bool _enabled)
     {
         m_control_enabled = _enabled;
+
+        if(_enabled == false)
+        {
+            ChangeAnimetion("Idle");
+        }
     }
 
     void DebugKey()

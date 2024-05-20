@@ -5,12 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class BaseSceneDirector : MonoBehaviour
 {
-    protected float FADE_SPEED = 2.0f;
+    [SerializeField] protected float FADE_SPEED = 2.0f;
     [SerializeField] protected string next_scene = "";
     [SerializeField] protected GameObject fade_sprite;
     protected SpriteRenderer sprite_renderer = new SpriteRenderer();
     protected GameObject m_camera;
     bool is_transition = false;
+    bool is_fadein = false;
     bool is_fadeout = false;
     float fade_alpha = 0;
 
@@ -18,6 +19,7 @@ public class BaseSceneDirector : MonoBehaviour
     protected virtual void Start()
     {
         m_camera = GameObject.Find("Main Camera");
+        fade_sprite = Instantiate(fade_sprite) as GameObject;
         sprite_renderer = fade_sprite.GetComponent<SpriteRenderer>();
     }
 
@@ -31,11 +33,25 @@ public class BaseSceneDirector : MonoBehaviour
 
         Vector3 cam_pos = m_camera.transform.position;
         fade_sprite.transform.position = new Vector3(cam_pos.x, cam_pos.y, fade_sprite.transform.position.z);
+    }
 
-        if(FadeOut())
+    public bool FadeIn()
+    {
+        if(is_fadein == false)
         {
-            LoadScene();
+            return false;
         }
+
+        if(fade_alpha <= 0.0f)
+        {
+            is_fadein = false;
+            return true;
+        }
+
+        fade_alpha -= FADE_SPEED;
+        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+
+        return false;
     }
 
     public bool FadeOut()
@@ -47,6 +63,7 @@ public class BaseSceneDirector : MonoBehaviour
 
         if(fade_alpha >= 255.0f)
         {
+            is_fadeout = false;
             return true;
         }
 
@@ -54,6 +71,32 @@ public class BaseSceneDirector : MonoBehaviour
         sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
 
         return false;
+    }
+
+    public void StartFadeIn()
+    {
+        is_fadein = true;
+        fade_alpha = 255.0f;
+        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        Update();
+    }
+
+    public void StartFadeOut()
+    {
+        is_fadeout = true;
+        fade_alpha = 0.0f;
+        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        Update();
+    }
+
+    public bool IsFadeIn()
+    {
+        return is_fadein;
+    }
+
+    public bool IsFadeOut()
+    {
+        return is_fadeout;
     }
 
     public void LoadScene()
@@ -65,8 +108,8 @@ public class BaseSceneDirector : MonoBehaviour
         SceneManager.LoadScene(next_scene);
     }
 
-    public void StartFadeOut()
+    public bool IsTransition()
     {
-        is_fadeout = true;
+        return is_transition;
     }
 }
