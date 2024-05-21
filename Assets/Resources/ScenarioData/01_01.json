@@ -1,0 +1,21 @@
+{
+    "data_list":
+    [
+        {
+            "type":"move",
+            "data":"name:Player(Clone),x:1.0,y:0.0,z:0.0,animation:Walk"
+        },
+        {
+            "type":"speak",
+            "data":"name:Operator,text:作戦目標地点への到着を確認。"
+        },
+        {
+            "type":"speak",
+            "data":"name:Operator,text:今回の任務は、該当地区に発生した、機械生命体の排除です。"
+        },
+        {
+            "type":"speak",
+            "data":"name:Soldier,text:了解、作戦を開始する。"
+        }
+    ]
+}

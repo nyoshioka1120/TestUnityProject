@@ -41,7 +41,8 @@ public class PlayerController : MonoBehaviour
     Vector3 m_ray_offset = new Vector3(0.0f, 0.0f, 0.0f);
     bool m_is_ground = false;
 
-    public GameObject m_bullet_prefab;
+    //public GameObject m_bullet_prefab;
+    [SerializeField] private BulletController m_bullet_prefab;
 
     string m_now_anime_state = "Idle";
     string m_pre_anime_state = "Idle";
@@ -217,9 +218,13 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.C))
         {
-            GameObject bullet = Instantiate(m_bullet_prefab) as GameObject;
+            // GameObject bullet = Instantiate(m_bullet_prefab) as GameObject;
+            // Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
+            // bullet.GetComponent<BulletController>().Shoot(vec, m_dir);
+
+            BulletController bullet = Instantiate(m_bullet_prefab) as BulletController;
             Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
-            bullet.GetComponent<BulletController>().Shoot(vec, m_dir);
+            bullet.Shoot(vec, m_dir);
 
             normalized_time = normalized_time % 1;
 
@@ -255,7 +260,7 @@ public class PlayerController : MonoBehaviour
     {
     }
 
-    bool ChangeAnimetion(string _anime, float _fixed_time = -1.0f)
+    public bool ChangeAnimetion(string _anime, float _fixed_time = -1.0f)
     {
         if(m_now_anime_state == _anime && _fixed_time == -1.0f)
         {
@@ -327,11 +332,16 @@ public class PlayerController : MonoBehaviour
 
     public void SetControlEnabled(bool _enabled)
     {
+        ChangeAnimetion("Idle");
         m_control_enabled = _enabled;
 
-        if(_enabled == false)
+        if(_enabled == true)
         {
-            ChangeAnimetion("Idle");
+            m_rigidbody.bodyType = RigidbodyType2D.Dynamic;
+        }
+        else
+        {
+            m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
         }
     }
 
@@ -349,5 +359,10 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = m_is_ground ? Color.green : Color.red;
         Gizmos.DrawRay(transform.position + m_ray_offset, new Vector3(0, -m_ray_distance, 0));
+    }
+
+    public void InitPlayerController()
+    {
+        Start();
     }
 }

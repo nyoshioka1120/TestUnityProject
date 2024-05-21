@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec3f6425d687f1e44af671ca412097d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_bullet_prefab: {fileID: 5045235183575121868, guid: f8fac132750e47049b73ef695276a0c5, type: 3}
+  m_bullet_prefab: {fileID: 6677147728681956925, guid: f8fac132750e47049b73ef695276a0c5, type: 3}
   normalized_time: 0
   groundLayer:
     serializedVersion: 2

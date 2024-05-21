@@ -22,6 +22,8 @@ public class GameDirector : MonoBehaviour
 
     [SerializeField] GameSceneDirector m_scene_director;
 
+    [SerializeField] MovieController m_movie_controller;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,8 +68,7 @@ public class GameDirector : MonoBehaviour
 
         if(m_scene_director.FadeIn())
         {
-            MovieEnd();
-            m_game_mode = GAME_MODE.GAME;
+            m_game_mode = GAME_MODE.MOVIE;
         }
 
         if(m_scene_director.IsFadeIn())
@@ -84,6 +85,7 @@ public class GameDirector : MonoBehaviour
 
         m_player = Instantiate(m_player_prefab) as GameObject;
         m_player_controller = m_player.GetComponent<PlayerController>();
+        m_player_controller.InitPlayerController();
 
         var camera = GameObject.Find("Main Camera");
         camera.GetComponent<CameraController>().SetPlayer();
@@ -91,7 +93,13 @@ public class GameDirector : MonoBehaviour
 
     void MovieUpdate()
     {
+        if(m_movie_controller.IsExit())
+        {
+            m_movie_controller.gameObject.SetActive(false);
 
+            MovieEnd();
+            m_game_mode = GAME_MODE.GAME;
+        }
     }
 
     void GameUpdate()
