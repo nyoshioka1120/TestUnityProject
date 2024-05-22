@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class EnemyBase : MonoBehaviour
 
     protected Vector2 m_scale = new Vector2(1.0f, 1.0f);
 
-    protected string m_unique_name = "";
+    protected string m_unique_id = "";
     
 
     // Start is called before the first frame update
@@ -48,9 +49,20 @@ public class EnemyBase : MonoBehaviour
         GameObject director = GameObject.Find("GameDirector");
         if(director)
         {
-            director.GetComponent<GameDirector>().SetCleared(m_unique_name);
+            director.GetComponent<GameDirector>().SetCleared(GetUID());
         }
 
         Destroy(gameObject);
+    }
+
+    public string GetUID()
+    {
+        return m_unique_id;
+    }
+
+    public void SetUID()
+    {
+        if(m_unique_id != "") return;
+        m_unique_id = Guid.NewGuid().ToString("N");
     }
 }

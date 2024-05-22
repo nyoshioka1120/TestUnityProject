@@ -18,7 +18,8 @@ public class GameDirector : MonoBehaviour
     [SerializeField] GameObject m_player_prefab;
     GameObject m_player;
     PlayerController m_player_controller;
-    [SerializeField] List<QuestData> m_clear_check_list = new List<QuestData>();
+    List<QuestData> m_clear_check_list = new List<QuestData>();
+    [SerializeField] int clear_list_size = 0;
 
     [SerializeField] GameSceneDirector m_scene_director;
 
@@ -39,6 +40,7 @@ public class GameDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        clear_list_size = m_clear_check_list.Count;
         switch(m_game_mode)
         {
             case GAME_MODE.NONE:
@@ -79,16 +81,21 @@ public class GameDirector : MonoBehaviour
 
     void LoadStageData()
     {
-        QuestData tmp_data = new QuestData();
-        tmp_data.name = "tmp";
-        m_clear_check_list.Add(tmp_data);
-
         m_player = Instantiate(m_player_prefab) as GameObject;
         m_player_controller = m_player.GetComponent<PlayerController>();
         m_player_controller.InitPlayerController();
 
         var camera = GameObject.Find("Main Camera");
         camera.GetComponent<CameraController>().SetPlayer();
+    }
+
+    public void AddQuestData(string _name)
+    {
+        QuestData data = new QuestData();
+        data.name = _name;
+        m_clear_check_list.Add(data);
+
+        //Debug.Log("Add::"+_name);
     }
 
     void MovieUpdate()
@@ -137,7 +144,13 @@ public class GameDirector : MonoBehaviour
     {
         if(_name != "")
         {
-            m_clear_check_list.Single(d => d.name == _name).is_cleared = true;
+            QuestData data = m_clear_check_list.Single(d => d.name == _name);
+            if(data != null)
+            {
+                data.is_cleared = true;
+            }
+
+            Debug.Log("Add::"+_name);
         }
     }
 

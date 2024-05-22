@@ -22,20 +22,23 @@ public class EnemyGenerator : MonoBehaviour
         }
     }
 
-    public void Generate(string _name, Vector3 _pos)
+    public GameObject Generate(string _name, Vector3 _pos)
     {
         switch(_name)
         {
             case "E_Mite":
             {
-                var obj = Instantiate(EnemyMite);
+                GameObject obj = Instantiate(EnemyMite) as GameObject;
                 obj.transform.position = _pos;
-                break;
+                obj.GetComponent<EnemyBase>().SetUID();
+                return obj;
             }
             default:
             {
                 break;
             }
         }
+
+        return null;
     }
 }

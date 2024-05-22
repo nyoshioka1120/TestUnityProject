@@ -14,7 +14,7 @@ public class MapDataController : MonoBehaviour
     [SerializeField] TileDataList tile_data_list;
 
     [SerializeField] GameObject empty_grid_prefab;
-    [SerializeField] GameObject enemy_generator;
+    [SerializeField] EnemyGenerator enemy_generator;
 
     [SerializeField] string FILE_NAME = "map_data";
     [SerializeField] string FILE_DIR = "MapData/";
@@ -130,9 +130,13 @@ public class MapDataController : MonoBehaviour
         }
     }
 
-    public void GenerateEnemy(string _name, Vector3 _pos)
+    void GenerateEnemy(string _name, Vector3 _pos)
     {
-        enemy_generator.GetComponent<EnemyGenerator>().Generate(_name, _pos);
+        GameObject obj = enemy_generator.Generate(_name, _pos);
+        GameObject game_director = GameObject.Find("GameDirector");
+        string uid = obj.GetComponent<EnemyMite>().GetUID();
+        Debug.Log("Add::"+uid);
+        game_director.GetComponent<GameDirector>().AddQuestData(uid);
     }
 }
 
