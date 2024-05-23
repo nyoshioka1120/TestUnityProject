@@ -149,8 +149,6 @@ public class GameDirector : MonoBehaviour
             {
                 data.is_cleared = true;
             }
-
-            Debug.Log("Add::"+_name);
         }
     }
 

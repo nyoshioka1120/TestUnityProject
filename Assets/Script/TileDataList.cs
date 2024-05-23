@@ -16,4 +16,5 @@ public class TileData
     public string name;
     public string type;
     public Tile tile;
+    public string event_name;
 }

@@ -15,6 +15,7 @@ public class MapDataController : MonoBehaviour
 
     [SerializeField] GameObject empty_grid_prefab;
     [SerializeField] EnemyGenerator enemy_generator;
+    [SerializeField] TriggerEventController trigger_controller;
 
     [SerializeField] string FILE_NAME = "map_data";
     [SerializeField] string FILE_DIR = "MapData/";
@@ -54,10 +55,12 @@ public class MapDataController : MonoBehaviour
                     var tile = tilemap.GetTile(new Vector3Int(x, y, 0));
                     string name = tile_data_list.list.Single(t => t.tile == tile).name;
                     string type = tile_data_list.list.Single(t => t.tile == tile).type;
+                    string event_name = tile_data_list.list.Single(t => t.tile == tile).event_name;
                     var rot = tilemap.GetTransformMatrix(new Vector3Int(x, y, 0)).rotation;
                     tile_data.name = name;
                     tile_data.type = type;
-                    tile_data.rot = rot;                  
+                    tile_data.rot = rot;
+                    tile_data.event_name = event_name;
                 }
 
                 tile_datas.Add(tile_data);
@@ -122,21 +125,33 @@ public class MapDataController : MonoBehaviour
                         Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, map_data.rot, Vector3.one);
                         tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), mat);
                     }
+                    else if(map_data.type == "trigger")
+                    {
+                        Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                        GenerateTrigger(map_data.name, map_data.event_name, pos);
+                    }
 
                     x++;
                 }
             }
             y++;
         }
+
+        //trigger_controller.InitTriggers();
     }
 
     void GenerateEnemy(string _name, Vector3 _pos)
     {
         GameObject obj = enemy_generator.Generate(_name, _pos);
         GameObject game_director = GameObject.Find("GameDirector");
-        string uid = obj.GetComponent<EnemyMite>().GetUID();
+        string uid = obj.GetComponent<EnemyBase>().GetUID();
         Debug.Log("Add::"+uid);
         game_director.GetComponent<GameDirector>().AddQuestData(uid);
+    }
+
+    void GenerateTrigger(string _name, string _event, Vector3 _pos)
+    {
+        trigger_controller.Generate(_name, _event, _pos);
     }
 }
 
@@ -157,4 +172,5 @@ public class MapData
     public string name = "";
     public string type = "";
     public Quaternion rot = new Quaternion(0, 0, 0, 1.0f);
+    public string event_name = "";
 }

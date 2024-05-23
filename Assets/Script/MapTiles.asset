@@ -16,33 +16,52 @@ MonoBehaviour:
   - name: 71
     type: tile
     tile: {fileID: 11400000, guid: b8fd67fa9ebece14eab11e06003668e1, type: 2}
+    event_name: 
   - name: 72
     type: tile
     tile: {fileID: 11400000, guid: 2c3f66482552cca4a9f21801fad4e60a, type: 2}
+    event_name: 
   - name: 73
     type: tile
     tile: {fileID: 11400000, guid: a2b2d38a7d38a304f9ed1070644d1313, type: 2}
+    event_name: 
   - name: 106
     type: tile
     tile: {fileID: 11400000, guid: 33370766572bc4c48aeb9ceefe1610d5, type: 2}
+    event_name: 
   - name: 107
     type: tile
     tile: {fileID: 11400000, guid: 8855ed517931de04fa519a56a883dded, type: 2}
+    event_name: 
   - name: 108
     type: tile
     tile: {fileID: 11400000, guid: db7eaba01010a354b9feb7d1686e5d77, type: 2}
+    event_name: 
   - name: 109
     type: tile
     tile: {fileID: 11400000, guid: 816d77c5cf1ac7049af360e1746cfca9, type: 2}
+    event_name: 
   - name: 110
     type: tile
     tile: {fileID: 11400000, guid: efe7e75f7d7a2d14aab31092afdca46b, type: 2}
+    event_name: 
   - name: 140
     type: tile
     tile: {fileID: 11400000, guid: 7e6ff00c44762a2438487244c9cc9640, type: 2}
+    event_name: 
   - name: 144
     type: tile
     tile: {fileID: 11400000, guid: 8f7fdea78b379c441a618713355dd9b4, type: 2}
+    event_name: 
   - name: E_Mite
     type: enemy
     tile: {fileID: 11400000, guid: b8e181bc656e4e14fb5e1636ddc51254, type: 2}
+    event_name: 
+  - name: E_BigMite
+    type: enemy
+    tile: {fileID: 11400000, guid: c4b8e19775e4651498157615c19e7e68, type: 2}
+    event_name: 
+  - name: T_Boss
+    type: trigger
+    tile: {fileID: 11400000, guid: ec71619f0019f914aaaf3a48f18110b0, type: 2}
+    event_name: EventStartBossBattle

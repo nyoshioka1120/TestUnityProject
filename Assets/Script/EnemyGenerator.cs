@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyGenerator : MonoBehaviour
 {
     [SerializeField] GameObject EnemyMite;
+    [SerializeField] GameObject EnemyBigMite;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,13 @@ public class EnemyGenerator : MonoBehaviour
             case "E_Mite":
             {
                 GameObject obj = Instantiate(EnemyMite) as GameObject;
+                obj.transform.position = _pos;
+                obj.GetComponent<EnemyBase>().SetUID();
+                return obj;
+            }
+            case "E_BigMite":
+            {
+                GameObject obj = Instantiate(EnemyBigMite) as GameObject;
                 obj.transform.position = _pos;
                 obj.GetComponent<EnemyBase>().SetUID();
                 return obj;
