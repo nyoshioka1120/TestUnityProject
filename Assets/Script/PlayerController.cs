@@ -48,7 +48,6 @@ public class PlayerController : MonoBehaviour
     string m_pre_anime_state = "Idle";
 
     float m_shoot_anime_time = -1.0f;
-    [SerializeField] private float normalized_time = 0;
 
     Vector2 m_pre_velocity = new Vector2(0, 0);
 
@@ -56,6 +55,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float radius = 0;
 
     bool m_control_enabled = true;
+
+    int m_hp = 0;
+    bool m_is_damaged = false;
 
     // Start is called before the first frame update
     void Start()
@@ -69,12 +71,31 @@ public class PlayerController : MonoBehaviour
         //m_ray_distance = m_sprite_renderer.bounds.size.y * 0.5f + 0.05f;
         m_ray_distance = (m_circle_collider.radius + 0.1f) * m_scale.x;
         radius = m_ray_distance;
+
+        m_hp = 5;
     }
 
     // Update is called once per frame
     void Update()
     {
+        IsGround();
+
         if(m_control_enabled == false)
+        {
+            return;
+        }
+
+        if(m_is_damaged)
+        {
+            float normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            if(m_now_anime_state == "Damage" && normalized_time > 1f)
+            {
+                OnDamageAnimeEnd();
+            }
+            return;
+        }
+
+        if(IsDead())
         {
             return;
         }
@@ -180,10 +201,10 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         //m_ray_offset = new Vector3(m_box_collider.offset.x * 0.5f * m_dir, 0.0f, 0.0f);
-        m_ray_offset = new Vector3(m_circle_collider.offset.x * m_scale.x * m_dir, m_circle_collider.offset.y * m_scale.y, 0.0f);
+        // m_ray_offset = new Vector3(m_circle_collider.offset.x * m_scale.x * m_dir, m_circle_collider.offset.y * m_scale.y, 0.0f);
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
-        m_is_ground = hit.collider != null;
+        // RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
+        // m_is_ground = hit.collider != null;
 
         if(!m_is_ground && m_rigidbody.velocity.y < 0)
         {
@@ -214,7 +235,7 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        float normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
         if(Input.GetKeyDown(KeyCode.C))
         {
@@ -254,6 +275,16 @@ public class PlayerController : MonoBehaviour
         {
             OnShootAnimeEnd();
         }
+    }
+
+    bool IsGround()
+    {
+        m_ray_offset = new Vector3(m_circle_collider.offset.x * m_scale.x * m_dir, m_circle_collider.offset.y * m_scale.y, 0.0f);
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
+        m_is_ground = hit.collider != null;
+
+        return m_is_ground;
     }
 
     void Animation()
@@ -303,6 +334,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnDeadAnimeEnd()
+    {
+        GameDirector g_director = GameObject.Find("GameDirector").GetComponent<GameDirector>();
+        g_director.PlayerDead();
+    }
+
     bool IsRunning()
     {
         return m_shoot_anime_time != -1.0f;
@@ -332,7 +369,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetControlEnabled(bool _enabled)
     {
-        ChangeAnimetion("Idle");
+        //ChangeAnimetion("Idle");
         m_control_enabled = _enabled;
 
         if(_enabled == true)
@@ -345,13 +382,72 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Enemy")
+        {
+            Damage(1);
+        }
+    }
+
+    void Damage(int _damage)
+    {
+        if(m_is_damaged)
+        {
+            return;
+        }
+
+        m_hp -= _damage;
+
+        if(m_hp <= 0)
+        {
+            m_hp = 0;
+        }
+
+        m_is_damaged = true;
+
+        Vector2 force = new Vector2((-m_dir) * JUMP_POWER, JUMP_POWER);
+        m_rigidbody.AddForce(force, ForceMode2D.Impulse);
+
+        m_jump_state = JUMP_STATE.NONE;
+
+        ChangeAnimetion("Damage");
+    }
+
+    void OnDamageAnimeEnd()
+    {
+        if(m_is_ground && m_is_damaged)
+        {
+            m_is_damaged = false;
+
+            if(IsDead())
+            {
+                Dead();
+            }
+            else
+            {
+                ChangeAnimetion("Idle");
+            }
+        }
+    }
+
+    void Dead()
+    {
+        m_rigidbody.bodyType = RigidbodyType2D.Kinematic;
+        m_rigidbody.velocity = new Vector2(0f, 0f);
+        ChangeAnimetion("Dead");
+    }
+
+    public bool IsDead()
+    {
+        return m_hp <= 0;
+    }
+
     void DebugKey()
     {
         if(Input.GetKeyDown(KeyCode.R))
         {
-            m_jump_state = JUMP_STATE.RISING;
-            m_animator.speed = 1;
-            m_animator.SetTrigger("Idle");
+            Damage(1);
         }
     }
 

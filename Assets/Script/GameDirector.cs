@@ -10,7 +10,8 @@ public class GameDirector : MonoBehaviour
         NONE,
         MOVIE,
         GAME,
-        CLEAR
+        CLEAR,
+        GAMEOVER
     }
 
     GAME_MODE m_game_mode = GAME_MODE.NONE;
@@ -58,6 +59,11 @@ public class GameDirector : MonoBehaviour
                 return;
             }
             case GAME_MODE.CLEAR:
+            {
+                ClearUpdate();
+                return;
+            }
+            case GAME_MODE.GAMEOVER:
             {
                 ClearUpdate();
                 return;
@@ -180,6 +186,11 @@ public class GameDirector : MonoBehaviour
         {
             data.is_cleared = true;
         }
+    }
+
+    public void PlayerDead()
+    {
+        StageClear();
     }
 
     void DebugCreateStageData()
