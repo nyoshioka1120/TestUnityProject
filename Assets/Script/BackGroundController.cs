@@ -11,8 +11,8 @@ public class BackGroundController : MonoBehaviour
     Vector3 m_camera_pos = new Vector3(0, 0, 0);
     Vector3 m_camera_pos_pre = new Vector3(0, 0, 0);
 
-    GameObject m_bg_filter_far;
-    GameObject m_bg_filter_near;
+    // GameObject m_bg_filter_far;
+    // GameObject m_bg_filter_near;
 
     GameObject m_bg_1;
     GameObject m_bg_2;
@@ -30,8 +30,8 @@ public class BackGroundController : MonoBehaviour
         m_camera_pos = m_camera.transform.position;
         m_camera_pos_pre = m_camera_pos;
 
-        m_bg_filter_far = GameObject.Find("BackGroundFilterFar");
-        m_bg_filter_far.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 3.0f);
+        // m_bg_filter_far = GameObject.Find("BackGroundFilterFar");
+        // m_bg_filter_far.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 3.0f);
 
         m_bg_far = new List<GameObject>();
 
@@ -48,8 +48,8 @@ public class BackGroundController : MonoBehaviour
         m_bg_far.Add(bg_far_3);
 
 
-        m_bg_filter_near = GameObject.Find("BackGroundFilterNear");
-        m_bg_filter_near.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 1.0f);
+        // m_bg_filter_near = GameObject.Find("BackGroundFilterNear");
+        // m_bg_filter_near.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 1.0f);
 
         m_bg_near = new List<GameObject>();
 
@@ -71,8 +71,8 @@ public class BackGroundController : MonoBehaviour
     {
         m_camera_pos = m_camera.transform.position;
 
-        m_bg_filter_far.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 3.0f);
-        m_bg_filter_near.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 1.0f);
+        // m_bg_filter_far.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 3.0f);
+        // m_bg_filter_near.transform.position = new Vector3(m_camera_pos.x, m_camera_pos.y, 1.0f);
 
         Vector3 bg_pos_far_1 = new Vector3(m_camera_pos.x / BG_W * BG_W + BG_W, m_camera_pos.y, 4.0f);
         Vector3 bg_pos_far_2 = new Vector3(m_camera_pos.x / BG_W * BG_W - BG_W, m_camera_pos.y, 4.0f);

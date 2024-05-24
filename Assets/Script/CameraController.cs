@@ -22,6 +22,11 @@ public class CameraController : MonoBehaviour
 
         Vector3 playerPos = player.transform.position;
         transform.position = new Vector3(playerPos.x, transform.position.y, transform.position.z);
+
+        if(transform.position.x < 0f)
+        {
+            transform.position = new Vector3(0.0f, transform.position.y, transform.position.z);
+        }
     }
 
     public void SetPlayer()
