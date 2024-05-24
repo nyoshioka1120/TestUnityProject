@@ -15,7 +15,7 @@ public class EventStartBossBattle : OnTouchTrigger
 
         foreach (var obj in all_obj)
         {
-            if(obj.name == "EnemyBigMitePrefab(Clone)")
+            if(obj.name == "EnemyGunnerPrefab(Clone)")
             {
                 m_target = obj;
                 m_target.SetActive(false);

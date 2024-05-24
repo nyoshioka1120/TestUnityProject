@@ -61,9 +61,9 @@ MonoBehaviour:
     type: enemy
     tile: {fileID: 11400000, guid: b8e181bc656e4e14fb5e1636ddc51254, type: 2}
     event_name: 
-  - name: E_BigMite
+  - name: E_Gunner
     type: enemy
-    tile: {fileID: 11400000, guid: c4b8e19775e4651498157615c19e7e68, type: 2}
+    tile: {fileID: 11400000, guid: 721dbcb5d8af3654680d61aa5aeef36f, type: 2}
     event_name: 
   - name: T_Boss
     type: trigger

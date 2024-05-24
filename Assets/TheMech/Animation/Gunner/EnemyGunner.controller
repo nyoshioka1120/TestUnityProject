@@ -87,7 +87,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EnemyMite
+  m_Name: EnemyGunner
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Idle
@@ -166,7 +166,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 3adac4fb854fb0e49ba5e943b32d92c5, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2e16a73993dd18c4690b939c97b84547, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -192,7 +192,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 2dd7a3f9c473e984e95c7f3e8ac12b9c, type: 2}
+  m_Motion: {fileID: 7400000, guid: fb5eba081db88254cb83986e1f5484fe, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -218,7 +218,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 473965b813000c74698a934340fc8ceb, type: 2}
+  m_Motion: {fileID: 7400000, guid: dcb69f75c808e0a489417373ba16fe4f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
