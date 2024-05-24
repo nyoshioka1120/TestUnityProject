@@ -443,6 +443,18 @@ public class PlayerController : MonoBehaviour
         return m_hp <= 0;
     }
 
+    public void SetPosition(Vector3 _pos)
+    {
+        Debug.Log("PlayerController::SetPosition()");
+        Debug.Log(_pos);
+
+        Vector3 offset = new Vector3(0f,0.1f,0f);
+        Vector3 pos = _pos + offset;
+        transform.position = pos;
+
+        transform.position = _pos;
+    }
+
     void DebugKey()
     {
         if(Input.GetKeyDown(KeyCode.R))

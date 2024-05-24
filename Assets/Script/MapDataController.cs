@@ -23,6 +23,8 @@ public class MapDataController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("MapDataController::Start()");
+
         Save();
         Load();
     }
@@ -114,21 +116,37 @@ public class MapDataController : MonoBehaviour
                 }
                 else
                 {
-                    if(map_data.type == "enemy")
+                    switch(map_data.type)
                     {
-                        Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
-                        GenerateEnemy(map_data.name, pos);
-                    }
-                    else if(map_data.type == "tile")
-                    {
-                        tilemap.SetTile(new Vector3Int(x, y, 0), tile_data_list.list.Single(t => t.name == map_data.name).tile);
-                        Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, map_data.rot, Vector3.one);
-                        tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), mat);
-                    }
-                    else if(map_data.type == "trigger")
-                    {
-                        Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
-                        GenerateTrigger(map_data.name, map_data.event_name, pos);
+                        case "player":
+                        {
+                            Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                            SetPlayerPosition(pos);
+                            break;
+                        }
+                        case "enemy":
+                        {
+                            Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                            GenerateEnemy(map_data.name, pos);
+                            break;
+                        }
+                        case "tile":
+                        {
+                            tilemap.SetTile(new Vector3Int(x, y, 0), tile_data_list.list.Single(t => t.name == map_data.name).tile);
+                            Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, map_data.rot, Vector3.one);
+                            tilemap.SetTransformMatrix(new Vector3Int(x, y, 0), mat);
+                            break;
+                        }
+                        case "trigger":
+                        {
+                            Vector3 pos = tilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
+                            GenerateTrigger(map_data.name, map_data.event_name, pos);
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
                     }
 
                     x++;
@@ -138,6 +156,14 @@ public class MapDataController : MonoBehaviour
         }
 
         //trigger_controller.InitTriggers();
+    }
+
+    void SetPlayerPosition(Vector3 _pos)
+    {
+        GameObject game_director = GameObject.Find("GameDirector");
+        game_director.GetComponent<GameDirector>().LoadStageData();
+
+        game_director.GetComponent<GameDirector>().SetPlayerPosition(_pos);
     }
 
     void GenerateEnemy(string _name, Vector3 _pos)

@@ -29,6 +29,7 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("GameDirector::Start()");
         LoadStageData();
 
         MovieStart();
@@ -85,14 +86,21 @@ public class GameDirector : MonoBehaviour
         }
     }
 
-    void LoadStageData()
+    public void LoadStageData()
     {
+        if(m_player) return;
+
         m_player = Instantiate(m_player_prefab) as GameObject;
         m_player_controller = m_player.GetComponent<PlayerController>();
         m_player_controller.InitPlayerController();
 
         var camera = GameObject.Find("Main Camera");
         camera.GetComponent<CameraController>().SetPlayer();
+    }
+
+    public void SetPlayerPosition(Vector3 _pos)
+    {
+        m_player_controller.SetPosition(_pos);
     }
 
     public void AddQuestData(string _name)

@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: MapTiles
   m_EditorClassIdentifier: 
   list:
+  - name: Player
+    type: player
+    tile: {fileID: 11400000, guid: 1ebc56e7ce5f15a4bb3f3e1ce57ffd9b, type: 2}
+    event_name: 
   - name: 71
     type: tile
     tile: {fileID: 11400000, guid: b8fd67fa9ebece14eab11e06003668e1, type: 2}
