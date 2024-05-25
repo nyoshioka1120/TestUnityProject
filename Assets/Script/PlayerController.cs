@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
 
     const float SHOOT_ANIMATION_TIME = 1.0f / 2.0f;
 
+    const float NO_DAMEGE_TIME = 1.0f;
+
+    const int MAX_HP = 10;
+
     enum JUMP_STATE
     {
         NONE,
@@ -56,8 +60,10 @@ public class PlayerController : MonoBehaviour
 
     bool m_control_enabled = true;
 
-    int m_hp = 0;
+    int m_hp = MAX_HP;
     bool m_is_damaged = false;
+
+    GameDirector m_game_director;
 
     // Start is called before the first frame update
     void Start()
@@ -72,7 +78,7 @@ public class PlayerController : MonoBehaviour
         m_ray_distance = (m_circle_collider.radius + 0.1f) * m_scale.x;
         radius = m_ray_distance;
 
-        m_hp = 5;
+        m_game_director = GameObject.Find("GameDirector").GetComponent<GameDirector>();
     }
 
     // Update is called once per frame
@@ -88,7 +94,7 @@ public class PlayerController : MonoBehaviour
         if(m_is_damaged)
         {
             float normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            if(m_now_anime_state == "Damage" && normalized_time > 1f)
+            if(m_now_anime_state == "Damage" && normalized_time > NO_DAMEGE_TIME)
             {
                 OnDamageAnimeEnd();
             }
@@ -336,8 +342,7 @@ public class PlayerController : MonoBehaviour
 
     void OnDeadAnimeEnd()
     {
-        GameDirector g_director = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-        g_director.PlayerDead();
+        m_game_director.PlayerDead();
     }
 
     bool IsRunning()
@@ -406,17 +411,22 @@ public class PlayerController : MonoBehaviour
 
         m_is_damaged = true;
 
+        Debug.Log("Player::Damage()");
+
         Vector2 force = new Vector2((-m_dir) * JUMP_POWER, JUMP_POWER);
         m_rigidbody.AddForce(force, ForceMode2D.Impulse);
 
         m_jump_state = JUMP_STATE.NONE;
 
-        ChangeAnimetion("Damage");
+        m_game_director.SetHPGauge(m_hp, MAX_HP);
+
+        ChangeAnimetion("Hurt", 0f);
     }
 
     void OnDamageAnimeEnd()
     {
-        if(m_is_ground && m_is_damaged)
+        float normalized_time = m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        if(m_is_ground && m_is_damaged && normalized_time > NO_DAMEGE_TIME)
         {
             m_is_damaged = false;
 
@@ -443,11 +453,18 @@ public class PlayerController : MonoBehaviour
         return m_hp <= 0;
     }
 
+    public int GetMaxHP()
+    {
+        return MAX_HP;
+    }
+
+    public int GetHP()
+    {
+        return m_hp;
+    }
+
     public void SetPosition(Vector3 _pos)
     {
-        Debug.Log("PlayerController::SetPosition()");
-        Debug.Log(_pos);
-
         Vector3 offset = new Vector3(0f,0.1f,0f);
         Vector3 pos = _pos + offset;
         transform.position = pos;

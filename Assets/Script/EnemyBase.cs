@@ -36,7 +36,7 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void Damage(int _damage)
     {
-        Debug.Log("CharacterBase::Damage");
+        Debug.Log("EnemyBase::Damage");
     }
 
     protected bool IsLive()

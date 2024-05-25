@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
@@ -26,10 +27,19 @@ public class GameDirector : MonoBehaviour
 
     [SerializeField] MovieController m_movie_controller;
 
+    [SerializeField] GameObject m_ui_canvas_prefab;
+    GameObject m_ui_canvas;
+    GameObject m_hp_gauge;
+
+    void Awake()
+    {
+        m_ui_canvas = Instantiate(m_ui_canvas_prefab);
+        m_hp_gauge = m_ui_canvas.transform.Find("HPBar/HP").gameObject;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("GameDirector::Start()");
         LoadStageData();
 
         MovieStart();
@@ -94,6 +104,8 @@ public class GameDirector : MonoBehaviour
         m_player_controller = m_player.GetComponent<PlayerController>();
         m_player_controller.InitPlayerController();
 
+        SetHPGauge(m_player_controller.GetHP(), m_player_controller.GetMaxHP());
+
         var camera = GameObject.Find("Main Camera");
         camera.GetComponent<CameraController>().SetPlayer();
     }
@@ -108,8 +120,6 @@ public class GameDirector : MonoBehaviour
         QuestData data = new QuestData();
         data.name = _name;
         m_clear_check_list.Add(data);
-
-        //Debug.Log("Add::"+_name);
     }
 
     void MovieUpdate()
@@ -199,6 +209,12 @@ public class GameDirector : MonoBehaviour
     public void PlayerDead()
     {
         StageClear();
+    }
+
+    public void SetHPGauge(int _hp, int _max_hp)
+    {
+        float hp_gauge_w = 310.0f / _max_hp * _hp;
+        m_hp_gauge.GetComponent<RectTransform>().sizeDelta = new Vector2(hp_gauge_w, 62.0f);
     }
 
     void DebugCreateStageData()

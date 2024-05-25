@@ -135,7 +135,7 @@ public class EnemyGunner : EnemyBase
 
     protected override void Damage(int _damage)
     {
-        Debug.Log("EnemyMite::Damage");
+        Debug.Log("EnemyGunner::Damage");
         m_rigidbody.velocity = new Vector2(0, 0);
 
         m_hp -= _damage;

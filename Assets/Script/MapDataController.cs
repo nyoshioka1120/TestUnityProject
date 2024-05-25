@@ -23,8 +23,6 @@ public class MapDataController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("MapDataController::Start()");
-
         Save();
         Load();
     }
@@ -72,7 +70,6 @@ public class MapDataController : MonoBehaviour
         }
 
         string json = JsonMapper.ToJson(list);
-        //Debug.Log(json);
 
         if(!Directory.Exists(FILE_DIR))
         {
@@ -171,7 +168,6 @@ public class MapDataController : MonoBehaviour
         GameObject obj = enemy_generator.Generate(_name, _pos);
         GameObject game_director = GameObject.Find("GameDirector");
         string uid = obj.GetComponent<EnemyBase>().GetUID();
-        Debug.Log("Add::"+uid);
         game_director.GetComponent<GameDirector>().AddQuestData(uid);
     }
 
