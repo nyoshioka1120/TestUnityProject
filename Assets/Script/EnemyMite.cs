@@ -41,6 +41,8 @@ public class EnemyMite : EnemyBase
     // Update is called once per frame
     protected override void Update()
     {
+        if(m_is_active == false) return;
+
         switch(m_action)
         {
             case 0:
@@ -130,6 +132,27 @@ public class EnemyMite : EnemyBase
         if(other.gameObject.tag == "Bullet")
         {
             Damage(1);
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.name == "Main Camera")
+        {
+            SetActive(true);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if(other.gameObject.name == "Main Camera")
+        {
+            SetActive(false);
         }
     }
 

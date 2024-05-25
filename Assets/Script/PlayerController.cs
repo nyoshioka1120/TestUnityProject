@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
         m_sprite_renderer = GetComponent<SpriteRenderer>();
         //m_ray_distance = m_sprite_renderer.bounds.size.y * 0.5f + 0.05f;
-        m_ray_distance = (m_circle_collider.radius + 0.1f) * m_scale.x;
+        m_ray_distance = (m_circle_collider.radius + 1.0f) * m_scale.x;
         radius = m_ray_distance;
 
         m_game_director = GameObject.Find("GameDirector").GetComponent<GameDirector>();
@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        IsGround();
+        CheckGround();
 
         if(m_control_enabled == false)
         {
@@ -283,13 +283,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    bool IsGround()
+    bool CheckGround()
     {
         m_ray_offset = new Vector3(m_circle_collider.offset.x * m_scale.x * m_dir, m_circle_collider.offset.y * m_scale.y, 0.0f);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position + m_ray_offset, Vector2.down, m_ray_distance, groundLayer);
         m_is_ground = hit.collider != null;
 
+        return m_is_ground;
+    }
+
+    bool IsGround()
+    {
         return m_is_ground;
     }
 
@@ -393,7 +398,28 @@ public class PlayerController : MonoBehaviour
         {
             Damage(1);
         }
+
+        // if(other.gameObject.layer == 7)
+        // {
+        //     CheckGround();
+        // }
     }
+
+    // void OnTriggerStay2D(Collider2D other)
+    // {
+    //     // if(other.gameObject.layer == 7)
+    //     // {
+    //     //     CheckGround();
+    //     // }
+    // }
+
+    // void OnCollisionExit2D(Collision2D other)
+    // {
+    //     // if(other.gameObject.layer == 7)
+    //     // {
+    //     //     m_is_ground = false;
+    //     // }
+    // }
 
     void Damage(int _damage)
     {

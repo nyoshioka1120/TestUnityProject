@@ -102,7 +102,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bullet_prefab: {fileID: 6677147728681956925, guid: f8fac132750e47049b73ef695276a0c5, type: 3}
-  normalized_time: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -153,7 +152,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!58 &79680265784910082
 CircleCollider2D:

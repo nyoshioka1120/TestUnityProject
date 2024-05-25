@@ -36,4 +36,20 @@ public class CameraController : MonoBehaviour
         player = GameObject.Find("Player(Clone)");
         Update();
     }
+
+    // void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     if(other.gameObject.tag == "Enemy")
+    //     {
+    //         other.gameObject.GetComponent<EnemyBase>().SetActive(true);
+    //     }
+    // }
+
+    // void OnTriggerExit2D(Collider2D other)
+    // {
+    //     if(other.gameObject.tag == "Enemy")
+    //     {
+    //         other.gameObject.GetComponent<EnemyBase>().SetActive(false);
+    //     }
+    // }
 }

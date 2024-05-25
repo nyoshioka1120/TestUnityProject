@@ -15,6 +15,8 @@ public class EnemyBase : MonoBehaviour
     protected Vector2 m_scale = new Vector2(1.0f, 1.0f);
 
     protected string m_unique_id = "";
+
+    protected bool m_is_active = false;
     
 
     // Start is called before the first frame update
@@ -26,7 +28,7 @@ public class EnemyBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        
+        if(m_is_active == false) return;
     }
 
     void SetHp(int _hp)
@@ -64,5 +66,10 @@ public class EnemyBase : MonoBehaviour
     {
         if(m_unique_id != "") return;
         m_unique_id = Guid.NewGuid().ToString("N");
+    }
+
+    public void SetActive(bool _active)
+    {
+        m_is_active = _active;
     }
 }
