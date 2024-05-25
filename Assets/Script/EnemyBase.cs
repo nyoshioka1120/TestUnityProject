@@ -39,7 +39,7 @@ public class EnemyBase : MonoBehaviour
         Debug.Log("EnemyBase::Damage");
     }
 
-    protected bool IsLive()
+    public bool IsLive()
     {
         return m_hp > 0;
     }

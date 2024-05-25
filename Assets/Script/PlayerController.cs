@@ -389,7 +389,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.tag == "Enemy")
+        if(other.gameObject.tag == "Enemy" && other.gameObject.GetComponent<EnemyBase>().IsLive())
         {
             Damage(1);
         }
