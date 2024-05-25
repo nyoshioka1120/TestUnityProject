@@ -1,26 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class BaseSceneDirector : MonoBehaviour
 {
     [SerializeField] protected float FADE_SPEED = 2.0f;
     [SerializeField] protected string next_scene = "";
-    [SerializeField] protected GameObject fade_sprite;
+    [SerializeField] protected GameObject canvas_prefab;
+    protected GameObject m_canvas;
+    protected Image m_fade;
     protected SpriteRenderer sprite_renderer = new SpriteRenderer();
-    protected GameObject m_camera;
     bool is_transition = false;
     bool is_fadein = false;
     bool is_fadeout = false;
     float fade_alpha = 0;
 
+    protected virtual void Awake()
+    {
+        m_canvas = Instantiate(canvas_prefab);
+        m_fade = m_canvas.transform.Find("Fade").gameObject.GetComponent<Image>();
+    }
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        m_camera = GameObject.Find("Main Camera");
-        fade_sprite = Instantiate(fade_sprite) as GameObject;
-        sprite_renderer = fade_sprite.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -30,9 +35,6 @@ public class BaseSceneDirector : MonoBehaviour
         {
             is_fadeout = true;
         }
-
-        Vector3 cam_pos = m_camera.transform.position;
-        fade_sprite.transform.position = new Vector3(cam_pos.x, cam_pos.y, fade_sprite.transform.position.z);
     }
 
     public bool FadeIn()
@@ -42,14 +44,16 @@ public class BaseSceneDirector : MonoBehaviour
             return false;
         }
 
-        if(fade_alpha <= 0.0f)
+        if(fade_alpha <= 0)
         {
             is_fadein = false;
             return true;
         }
 
         fade_alpha -= FADE_SPEED;
-        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        if(fade_alpha < 0) fade_alpha = 0;
+
+        m_fade.color = new Color (0, 0, 0, fade_alpha / 255.0f);
 
         return false;
     }
@@ -68,7 +72,9 @@ public class BaseSceneDirector : MonoBehaviour
         }
 
         fade_alpha += FADE_SPEED;
-        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        if(fade_alpha > 255.0f) fade_alpha = 255.0f;
+
+        m_fade.color = new Color (0, 0, 0, fade_alpha / 255.0f);
 
         return false;
     }
@@ -77,15 +83,15 @@ public class BaseSceneDirector : MonoBehaviour
     {
         is_fadein = true;
         fade_alpha = 255.0f;
-        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        m_fade.color = new Color (0, 0, 0, fade_alpha / 255.0f);
         Update();
     }
 
     public void StartFadeOut()
     {
         is_fadeout = true;
-        fade_alpha = 0.0f;
-        sprite_renderer.color = new Color(0, 0, 0, fade_alpha / 255.0f);
+        fade_alpha = 0;
+        m_fade.color = new Color (0, 0, 0, fade_alpha / 255.0f);
         Update();
     }
 

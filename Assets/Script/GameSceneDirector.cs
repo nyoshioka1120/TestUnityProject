@@ -11,9 +11,7 @@ public class GameSceneDirector : BaseSceneDirector
     // }
 
     // Update is called once per frame
-    protected override void Update()
-    {
-        Vector3 cam_pos = m_camera.transform.position;
-        fade_sprite.transform.position = new Vector3(cam_pos.x, cam_pos.y, fade_sprite.transform.position.z);
-    }
+    // protected override void Update()
+    // {
+    // }
 }

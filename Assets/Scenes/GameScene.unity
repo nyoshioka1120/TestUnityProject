@@ -40996,7 +40996,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FADE_SPEED: 2
   next_scene: TitleScene
-  fade_sprite: {fileID: 6767432748793312679, guid: 5a206c765d203564c83d8d8f4e8198a1, type: 3}
+  canvas_prefab: {fileID: 3114829160535316114, guid: d8ca517840b3e8144be0d531cd18187e, type: 3}
 --- !u!4 &415541092
 Transform:
   m_ObjectHideFlags: 0
