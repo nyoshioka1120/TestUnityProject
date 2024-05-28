@@ -15,7 +15,12 @@ public class EnemyGunner : EnemyBase
     int m_action_cnt = 0;
 
     int IDLE_TIME = 60;
-    int MOVE_TIME = 60;
+    int SHOOT_TIME = 60;
+    int SHOOT_INTERVAL = 20;
+
+    [SerializeField] GameObject m_bullet_prefab;
+
+    Vector3 m_target_pos = new Vector3(0f,0f,0f);
 
     // Start is called before the first frame update
     protected override void Start()
@@ -55,7 +60,7 @@ public class EnemyGunner : EnemyBase
             }
             case 2:
             {
-                Move();
+                Shoot();
                 break;
             }
         }
@@ -78,6 +83,7 @@ public class EnemyGunner : EnemyBase
         {
             case 0:
             {
+                m_rigidbody.simulated = false;
                 m_animator.SetTrigger("Dead");
                 break;
             }
@@ -88,7 +94,8 @@ public class EnemyGunner : EnemyBase
             }
             case 2:
             {
-                m_animator.SetTrigger("Walk");
+                m_target_pos = GameObject.Find("Player(Clone)").transform.position;
+                m_animator.SetTrigger("Idle");
                 break;
             }
             default:
@@ -107,19 +114,16 @@ public class EnemyGunner : EnemyBase
         }
     }
 
-    void Move()
+    void Shoot()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, new Vector2(1.0f * m_dir, 0), m_ray_distance, groundLayer);
-
-        if(hit.collider != null)
+        if(m_action_cnt % SHOOT_INTERVAL == 0)
         {
-            m_dir = m_dir * -1;
-            transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.x, 1);
+            var bullet = Instantiate(m_bullet_prefab);
+            var shoot_point = transform.Find("ShootPoint");
+            bullet.GetComponent<EnemyBulletBase>().Shoot(shoot_point.position, m_target_pos);
         }
 
-        m_rigidbody.velocity = new Vector2(m_speed * m_dir, m_rigidbody.velocity.y);
-
-        if(m_action_cnt > MOVE_TIME)
+        if(m_action_cnt > SHOOT_TIME)
         {
             ChangeAction(1);
         }

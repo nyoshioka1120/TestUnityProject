@@ -245,13 +245,9 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.C))
         {
-            // GameObject bullet = Instantiate(m_bullet_prefab) as GameObject;
-            // Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
-            // bullet.GetComponent<BulletController>().Shoot(vec, m_dir);
-
             BulletController bullet = Instantiate(m_bullet_prefab) as BulletController;
-            Vector3 vec = new Vector3(transform.position.x + (1.0f * m_dir), transform.position.y, 0);
-            bullet.Shoot(vec, m_dir);
+            Vector3 pos = transform.Find("ShootPoint").position;
+            bullet.Shoot(pos, m_dir);
 
             normalized_time = normalized_time % 1;
 
@@ -398,32 +394,20 @@ public class PlayerController : MonoBehaviour
         {
             Damage(1);
         }
-
-        // if(other.gameObject.layer == 7)
-        // {
-        //     CheckGround();
-        // }
     }
 
-    // void OnTriggerStay2D(Collider2D other)
-    // {
-    //     // if(other.gameObject.layer == 7)
-    //     // {
-    //     //     CheckGround();
-    //     // }
-    // }
-
-    // void OnCollisionExit2D(Collision2D other)
-    // {
-    //     // if(other.gameObject.layer == 7)
-    //     // {
-    //     //     m_is_ground = false;
-    //     // }
-    // }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "EnemyBullet")
+        {
+            Damage(1);
+            other.gameObject.GetComponent<EnemyBulletBase>().Damaged();
+        }
+    }
 
     void Damage(int _damage)
     {
-        if(m_is_damaged)
+        if(m_is_damaged || IsDead())
         {
             return;
         }
@@ -446,7 +430,7 @@ public class PlayerController : MonoBehaviour
 
         m_game_director.SetHPGauge(m_hp, MAX_HP);
 
-        ChangeAnimetion("Hurt", 0f);
+        ChangeAnimetion("Damage", 0f);
     }
 
     void OnDamageAnimeEnd()

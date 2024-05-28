@@ -16,6 +16,12 @@ public class EnemyMite : EnemyBase
 
     int IDLE_TIME = 60;
     int MOVE_TIME = 60;
+    int SHOOT_TIME = 60;
+    int SHOOT_INTERVAL = 60;
+
+    bool is_target_range = false;
+
+    [SerializeField] GameObject m_bullet_prefab;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -60,6 +66,11 @@ public class EnemyMite : EnemyBase
                 Move();
                 break;
             }
+            case 3:
+            {
+                Shoot();
+                break;
+            }
         }
 
         m_action_cnt++;
@@ -80,6 +91,7 @@ public class EnemyMite : EnemyBase
         {
             case 0:
             {
+                m_rigidbody.simulated = false;
                 m_animator.SetTrigger("Dead");
                 break;
             }
@@ -91,6 +103,16 @@ public class EnemyMite : EnemyBase
             case 2:
             {
                 m_animator.SetTrigger("Walk");
+                break;
+            }
+            case 3:
+            {
+                GameObject player = GameObject.Find("Player(Clone)");
+
+                m_dir = player.transform.position.x > transform.position.x ? 1 : -1;
+                transform.localScale = new Vector3(m_dir * m_scale.x, m_scale.x, 1);
+
+                m_animator.SetTrigger("Idle");
                 break;
             }
             default:
@@ -105,7 +127,18 @@ public class EnemyMite : EnemyBase
     {
         if(m_action_cnt > IDLE_TIME)
         {
-            ChangeAction(Random.Range(1, 3));
+            int action = 1;
+
+            if(is_target_range == true)
+            {
+                action = Random.Range(1, 4);
+            }
+            else
+            {
+                action = Random.Range(1, 3);
+            }
+
+            ChangeAction(action);
         }
     }
 
@@ -122,6 +155,22 @@ public class EnemyMite : EnemyBase
         m_rigidbody.velocity = new Vector2(m_speed * m_dir, m_rigidbody.velocity.y);
 
         if(m_action_cnt > MOVE_TIME)
+        {
+            ChangeAction(1);
+        }
+    }
+
+    void Shoot()
+    {
+        if(m_action_cnt % SHOOT_INTERVAL == 0)
+        {
+            var bullet = Instantiate(m_bullet_prefab);
+            var shoot_point = transform.Find("ShootPoint");
+            Vector3 target_pos = shoot_point.position + new Vector3(1.0f * m_dir, 0f, 0f);
+            bullet.GetComponent<EnemyBulletBase>().Shoot(shoot_point.position, target_pos);
+        }
+
+        if(m_action_cnt > SHOOT_TIME)
         {
             ChangeAction(1);
         }
@@ -146,6 +195,11 @@ public class EnemyMite : EnemyBase
         {
             SetActive(true);
         }
+
+        if(other.gameObject.tag == "Player")
+        {
+            is_target_range = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -153,6 +207,11 @@ public class EnemyMite : EnemyBase
         if(other.gameObject.name == "Main Camera")
         {
             SetActive(false);
+        }
+
+        if(other.gameObject.tag == "Player")
+        {
+            is_target_range = false;
         }
     }
 
