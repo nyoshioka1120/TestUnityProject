@@ -13,6 +13,14 @@ public class ViewSetting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // ゲーム終了
+        if(Input.GetKey(KeyCode.Escape))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 }
